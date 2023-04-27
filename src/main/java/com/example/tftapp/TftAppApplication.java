@@ -3,7 +3,6 @@ package com.example.tftapp;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 @RestController
 public class TftAppApplication {
 	private static Map<String, String> jsonOutput = new HashMap<>();
+	private RiotAPIHelper riotAPIHelper;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TftAppApplication.class, args);
@@ -37,9 +37,9 @@ public class TftAppApplication {
 	}
 
 	@GetMapping("/match-history")
-	public ResponseEntity<Object> getMatchHistory(){
-		jsonOutput.put("PUUID", "PUUID");
-		jsonOutput.put("Name", "Name");
-		return new ResponseEntity<>(jsonOutput.values(), HttpStatus.OK);
+	public Collection getMatchHistory(@RequestParam(value = "sumName", defaultValue = "player") String summonerName){
+		riotAPIHelper = new RiotAPIHelper();
+		String puuid = riotAPIHelper.getPuuid(summonerName);
+		return (riotAPIHelper.getMatchHistory(puuid));
 	}
 }
